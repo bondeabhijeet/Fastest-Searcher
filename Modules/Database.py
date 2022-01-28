@@ -1,11 +1,6 @@
-import sqlite3
-
 
 # To create database 
-def CreateDatabase(DB_NAME, TABLE_NAME):
-    conn = sqlite3.connect(DB_NAME)                     # Create & connect database if not present, or else connect to pre-existing database
-    cur = conn.cursor()                                 # Assign a cursor
-
+def CreateTable(cur, TABLE_NAME):
     try:                                                # Try to create a table if not present
         cur.execute(f'''CREATE TABLE {TABLE_NAME}(
             filename text,
@@ -16,17 +11,12 @@ def CreateDatabase(DB_NAME, TABLE_NAME):
     except:                                             # If table already present 
         print('[*] : Table already exists')
 
-    conn.commit()                                       # Commit the changes to database
-    conn.close()                                        # Close the connection
-
 
 # To fill data in database (list of list)
-def FillDatabase(To_Fill, DB_NAME, TABLE_NAME):                              # FillDatabase([['0bd2c1d8ecd9daba0e2471ba75ad6adefc7051', '154 Bytes', 'E:\\PROGRAMS\\YoutubeData\\.git\\objects\\fe\\0bd2c1d8ecd9daba0e2471ba75ad6adefc7051']])
-    conn = sqlite3.connect(DB_NAME)
-    cur = conn.cursor()
+def FillDatabase(To_Fill, cur, TABLE_NAME):             # FillDatabase([['0bd2c1d8ecd9daba0e2471ba75ad6adefc7051', '154 Bytes', 'E:\\PROGRAMS\\YoutubeData\\.git\\objects\\fe\\0bd2c1d8ecd9daba0e2471ba75ad6adefc7051']])
 
     for element in To_Fill:                                                                 # Itterating over INNER list to get elements different attributes
-        cur.execute(f'INSERT INTO {TABLE_NAME} VALUES (:filename, :filesize, :path)',   # Seperating the attributes and adding them to database
+        cur.execute(f'INSERT INTO {TABLE_NAME} VALUES (:filename, :filesize, :path)',       # Seperating the attributes and adding them to database
         {
             'filename': element[0],
             'filesize': element[1],
@@ -34,35 +24,22 @@ def FillDatabase(To_Fill, DB_NAME, TABLE_NAME):                              # F
         }
         )
 
-    conn.commit()
-    conn.close()
-
 
 # To search the database
-def Searching(To_Search, DB_NAME, TABLE_NAME):
-    conn = sqlite3.connect(DB_NAME)
-    cur = conn.cursor()
+def Searching(To_Search, cur, TABLE_NAME):
 
-    output1 = cur.execute(f'SELECT * FROM {TABLE_NAME} WHERE filesize=?', (To_Search,))
-    print(output1.fetchall())                           # Get all the entries that match the query
-
-    conn.commit()
-    conn.close()
+    output1 = cur.execute(f'SELECT * FROM {TABLE_NAME} WHERE filesize=?', (To_Search,))     # Searching the database
+    print(output1.fetchall())                                                               # Get all the entries that match the query
 
 
 # To drop a certain table
-def DropTable(DB_NAME, TABLE_NAME):
-    conn = sqlite3.connect(DB_NAME)
-    cur = conn.cursor()
-
+def DropTable(cur, TABLE_NAME):
     try:
         cur.execute(f'DROP TABLE {TABLE_NAME}')         # Dropping the table
         print('Table dropped')
     except:
         print('Table is not present')
 
-    conn.commit()
-    conn.close()
 
 # [ DEBUGGING ]
 
