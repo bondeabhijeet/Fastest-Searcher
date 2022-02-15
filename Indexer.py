@@ -86,7 +86,7 @@ def NameScrapper(ScrapePath):
 
 
 # Path to scrape
-ScrapePath = 'E:\\'
+ScrapePath = 'Y:\\'
 NameScrapper(ScrapePath)
 flush_all()                                                 # Write the data remaining from 'Temp_File_Details' which is < 'Temp_Chunk_Size' to database
 
