@@ -1,13 +1,16 @@
-import tkinter as tk
-from tkinter import ttk
 from Modules import exit as EXIT
 from Modules import Database as DBM
 from Modules import FinalTable as FT
+
 import sqlite3
+from Modules import Indexer
+import tkinter as tk
+from tkinter import ttk
+
 
 # Debugging
 def donothing(*args):
-    print("Bmsdk kuch bhi mat type kar")
+    print("Work in progress")
     return
 
 DB_NAME = 'List.db'                     # Database name
@@ -49,21 +52,25 @@ menubar = tk.Menu( root)
 def exit(*args):
     EXIT.exit()
 
+def save(*args):
+    print("Heello")
+
 # Adding File Menu and commands
 file = tk.Menu(menubar, tearoff=0)
 menubar.add_cascade(label='File', menu = file)
-file.add_command(label='Open', command= None)
-file.add_command(label='New', command=None)
+file.add_command(label='Open', command= None, accelerator='W')
+file.add_command(label='Save', command=None, accelerator='Ctrl + S')
 file.add_command(label='Exit', command=exit, accelerator='Ctrl + W')
+root.bind('<Control-s>', save)
 root.bind('<Control-w>', exit)
 
 edit = tk.Menu(menubar, tearoff=0)
 menubar.add_cascade(label='Search', menu = edit)
-edit.add_command(label='Audios', command=None)
-edit.add_command(label='Videos', command=None)
-edit.add_command(label='Executable', command=None)
-edit.add_command(label='Folder', command=None)
-edit.add_command(label='Picture', command=None)
+edit.add_command(label='Audios', command=None, accelerator='W')
+edit.add_command(label='Videos', command=None, accelerator='W')
+edit.add_command(label='Executable', command=None, accelerator='W')
+edit.add_command(label='Folder', command=None, accelerator='W')
+edit.add_command(label='Picture', command=None, accelerator='W')
 edit.add_command(label='Compressed', command=donothing, accelerator='Ctrl + F')
 root.bind('<Control-f>', donothing)
 
@@ -73,27 +80,9 @@ Query.config(highlightbackground='black', highlightthickness=1, fg='black')
 Query.focus()                                                                       # Initialize the cursor to entry box on application start
 Query.pack(padx=5, pady=5, fill='x')
 
-Strr = [' Hello this is abhijeet.', ' Hello this is veena.', ' Hello this is Knu.', ' Hello this is Kay.', ' Hello this is K.']
-records = [['Ready for Searching...', 'Type to search...', 'System is ready...']]
+records = [['Ready for Searching...', 'Type to search...', 'System is ready...']]   # Initial display parameters on GUI
 MyTree = None
 MyTree = FT.display(root, records, 700)
-# for strr in Strr:
-#     p = Label(root, text=strr, anchor='w', width=500, background='#101116', foreground='#00a2ff', font=('Helvetica', 9, 'bold'))           # Anchors :- https://www.tutorialspoint.com/python/tk_anchors.htm
-
-#     p.pack(padx= 400)
-
-# pw = ttk.PanedWindow(orient='horizontal')
-# sidebar = ttk.PanedWindow(pw, orient="vertical")
-# main = tk.Frame(pw, width=400, height=400, background="black")
-# sidebar_top = tk.Frame(sidebar, width=200, height=200, background="gray")
-# sidebar_bottom = tk.Frame(sidebar, width=200, height=200, background="white")
-# pw.pack(fill="both", expand=True)
-# pw.add(sidebar)
-# pw.add(main)
-
-# Query.insert(0, '  ')
-# position = Query.index(tk.INSERT)
-
 
 def QueryMaker(event):
     global MyTree
@@ -113,8 +102,7 @@ def QueryMaker(event):
     print('FINAL STRING:', FinalQuery)              # Final query to search in database
     for i in MyTree.get_children():
         MyTree.delete(i)
-    output1 = DBM.SearchDatabase(cur, FinalQuery)   
-    # MyTree = FT.display(root, output1, 700)
+    output1 = DBM.SearchDatabase(cur, FinalQuery)
     MyTree = FT.DisplayEntries(output1, MyTree)
 
 Query.bind('<KeyPress>', QueryMaker)
